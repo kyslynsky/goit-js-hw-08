@@ -3,18 +3,19 @@ import Player from '@vimeo/player';
 
 const iframe = document.querySelector('iframe');
 const player = new Vimeo.Player(iframe);
+const STORAGE_KEY = 'videoplayer-current-time';
 
 function savePlayerRuntime(data) {
-  localStorage.setItem('videoplayer-current-time', data.seconds);
+  localStorage.setItem(STORAGE_KEY, data.seconds);
 
   if (data.seconds === data.duration) {
-    localStorage.removeItem('videoplayer-current-time');
+    localStorage.removeItem(STORAGE_KEY);
   }
 }
 
 player.on('timeupdate', throttle(savePlayerRuntime, 1000));
 
-const currentVideoRuntime = localStorage.getItem('videoplayer-current-time');
+const currentVideoRuntime = localStorage.getItem(STORAGE_KEY);
 
 player
   .setCurrentTime(currentVideoRuntime)
