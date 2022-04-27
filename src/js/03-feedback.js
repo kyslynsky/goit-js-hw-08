@@ -9,20 +9,47 @@ const refs = {
 const STORAGE_KEY = 'feedback-form-state';
 
 refs.form.addEventListener('submit', onSubmit);
-refs.input.addEventListener('input', saveEmail);
-refs.textarea.addEventListener('input', saveMessage);
+refs.input.addEventListener('input', throttle(getUserData, 500));
+refs.textarea.addEventListener('input', throttle(getUserData, 500));
 
 function onSubmit(e) {
   e.preventDefault();
 
-  //   const {
-  //     elements: { email, message },
-  //   } = e.currentTarget;
+  const {
+    elements: { email, message },
+  } = e.currentTarget;
 
-  //   console.log(email.value);
-  //   console.log(message.value);
+  if (email.value === '' || message.value === '') {
+    return alert('Please fill all fields');
+  }
+
+  console.log(userData);
+
   e.currentTarget.reset();
+  localStorage.removeItem(STORAGE_KEY);
 }
 
-// створити об'єкт в середині ф-ї і записати в значення email.value, message.value
+const userData = {};
 
+function getUserData(e) {
+  userData['email'] = refs.input.value;
+  userData['message'] = refs.textarea.value;
+
+  saveData();
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
+}
+
+function fillFormFromStorage() {
+  const savedDataText = localStorage.getItem(STORAGE_KEY);
+  const parsedData = JSON.parse(savedDataText);
+
+  if (parsedData) {
+    refs.input.value = parsedData.email;
+    refs.textarea.value = parsedData.message;
+  }
+}
+
+fillFormFromStorage();
