@@ -23,7 +23,11 @@ function onSubmit(e) {
     return alert('Please fill all fields');
   }
 
-  console.log(userData);
+  const inputData = {
+    email: email.value,
+    message: message.value,
+  };
+  console.log('inputData', inputData);
 
   e.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
